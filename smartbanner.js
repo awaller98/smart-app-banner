@@ -97,12 +97,20 @@
                 return 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
             }
         },
+        kindle: {
+            appMeta: 'amazon-app',
+            iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
+            getStoreLink: function() {
+                return 'http://www.amazon.com/gp/mas/dl/android?p=' + this.appId;
+            }
+        },
         android: {
             appMeta: 'google-play-app',
             iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
             getStoreLink: function() {
                 return 'http://play.google.com/store/apps/details?id=' + this.appId;
             }
+       
         }
     };
 
@@ -115,11 +123,15 @@
             button: 'VIEW', // Text for the install button
             store: {
                 ios: 'On the App Store',
+                kindle: 'On the Amazon Appstore',
                 android: 'In Google Play'
+                
             },
             price: {
                 ios: 'FREE',
+                kindle: 'FREE',
                 android: 'FREE'
+                
             },
             force: false // put platform type (ios, android, etc.) here for emulation
         }, options || {});
@@ -132,9 +144,13 @@
                      window.Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
                 this.type = 'ios';
             } // Check webview and native smart banner support (iOS 6+)
-        } else if (userAgent.match(/Android/i) !== null) {
+        } else if (userAgent.match(/Silk/i) !== null) {
+            this.type = 'kindle';
+        } 
+        else if (!userAgent.match(/Silk/i) && userAgent.match(/Android/i) !== null) {
             this.type = 'android';
-        }
+        } 
+        
 
         // Don't show banner if device isn't iOS or Android, website is loaded in app, user dismissed banner, or we have no app id in meta
         if (!this.type
